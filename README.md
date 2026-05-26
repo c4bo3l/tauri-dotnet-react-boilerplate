@@ -66,7 +66,9 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 └── scripts/                    # Build & dev automation
     ├── build-dotnet.mjs        # .NET publish + sidecar copy
     ├── tauri-dev.mjs           # Dev launcher: backend + Vite + Tauri
+    ├── clean-all.mjs           # Cleans all build artifacts (dotnet, cargo, dist)
     ├── db-reset.mjs            # Deletes app.db from build output dirs
+    ├── install-deps.mjs        # Install all deps (npm, dotnet restore, cargo fetch)
     ├── migration.mjs           # EF Core migration helper
     ├── remove-license.mjs      # Strips all licensing from the project
     ├── rename.mjs              # Renames project from "tauri-dotnet-app" to a custom name
@@ -84,6 +86,12 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 ## Getting Started
 
 ### 1. Install dependencies
+
+```bash
+npm run setup                   # Installs everything: npm, dotnet restore, cargo fetch
+```
+
+Or install individually:
 
 ```bash
 npm install                    # Frontend + root dependencies
@@ -146,6 +154,16 @@ npm run build:dotnet:linux     # Publish for Linux (linux-x64, cross-compile fro
 npm run build:dotnet:all       # Publish for all three platforms at once
 npm run build                  # Build frontend only
 ```
+
+## Cleaning
+
+To remove all build artifacts across the entire project:
+
+```bash
+npm run clean                   # dotnet clean + rm frontend/dist + cargo clean
+```
+
+This runs `dotnet clean` for the backend, deletes `frontend/dist/`, and runs `cargo clean` for the Tauri Rust target.
 
 ## Database & Migrations
 

@@ -25,6 +25,8 @@
     "version:bump": "node scripts/version.mjs bump",
     "license:keygen": "dotnet run --project tools/LicenseGenerator -- keygen",
     "license:sign": "dotnet run --project tools/LicenseGenerator -- sign",
-    "db:reset": "node scripts/db-reset.mjs"
+    "db:reset": "node scripts/db-reset.mjs",
+    "setup": "node scripts/install-deps.mjs",
+    "clean": "node scripts/clean-all.mjs"
   }
 }
