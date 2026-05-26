@@ -144,7 +144,138 @@ Output (varies by platform):
 
 The .NET backend can be published for any platform from macOS, but **the final Tauri bundle must be built on the target OS** (the Tauri CLI needs the platform's native toolchain to compile Rust and package the app).
 
-The recommended approach for multi-platform releases is **CI/CD** (e.g. GitHub Actions matrix build).
+### GitHub Actions
+
+#### PR checks
+
+Create `.github/workflows/pr.yml`:
+
+```yaml
+name: PR
+on: [pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm install
+      - run: npm run lint
+
+  dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "10.0" }
+      - run: dotnet restore backend/dotnet-backend.slnx
+      - run: dotnet build backend/dotnet-backend.csproj --no-restore
+      - run: dotnet test backend/dotnet-backend.slnx --no-restore
+```
+
+#### Release build
+
+Create `.github/workflows/release.yml`:
+
+```yaml
+name: Release
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  tauri:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            bundle: "app,dmg"
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            bundle: msi
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            bundle: deb
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "10.0" }
+      - uses: dtolnay/rust-toolchain@stable
+
+      - run: npm install
+
+      - name: Build and bundle
+        run: |
+          node scripts/build-dotnet.mjs
+          cd tauri
+          ../frontend/node_modules/.bin/tauri build --bundles ${{ matrix.bundle }}
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            tauri/target/release/bundle/**/*
+```
+
+#### Auto-version on merge to `main`
+
+Add a workflow that bumps the version in `scripts/version.txt` after every merge to `main`, using conventional commit prefixes to determine the bump type:
+
+```yaml
+name: Auto Version
+on:
+  push:
+    branches: [main]
+
+jobs:
+  bump:
+    if: github.event.head_commit.message != 'docs: update version'
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+
+      - name: Determine bump type from commit messages
+        id: bump
+        run: |
+          # Collect messages of new commits since last version bump
+          last_version=$(git log --grep="^docs: update version" --format="%H" -1)
+          if [ -z "$last_version" ]; then
+            last_version=$(git rev-list --max-parents=0 HEAD)
+          fi
+          msgs=$(git log "$last_version"..HEAD --format="%s" --no-merges)
+
+          bump="patch"
+          echo "$msgs" | while read msg; do
+            case "$msg" in
+              BREAKING\ CHANGE:*|*!:*) bump="major" ;;
+              feat:*|feat\(*\):*) [ "$bump" != "major" ] && bump="minor" ;;
+            esac
+          done
+          echo "type=$bump" >> "$GITHUB_OUTPUT"
+
+      - run: node scripts/version.mjs bump ${{ steps.bump.outputs.type }}
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add scripts/version.txt
+          git commit -m "docs: update version to $(node scripts/version.mjs read)"
+          git push
+```
+
+This approach requires **conventional commit** messages on `main`:
+- `fix:` → patch bump (0.1.0 → 0.1.1)
+- `feat:` → minor bump (0.1.0 → 0.2.0)
+- `BREAKING CHANGE:` or `!:` suffix → major bump (0.1.0 → 1.0.0)
 
 ### Build individual components
 
