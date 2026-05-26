@@ -123,7 +123,7 @@ cd tauri && cargo fetch        # Rust / Tauri dependencies
 
 ### 2. Configure the database password
 
-Set `DatabasePassword` in `backend/appsettings.json` (and `backend/appsettings.Development.json` for dev).
+Set `DatabasePassword` and `LicensePublicKey` in `backend/appsettings.json` (and `backend/appsettings.Development.json` for dev). In CI/CD, override them via environment variables (`DatabasePassword`, `LicensePublicKey`) — .NET config reads env vars before `appsettings.json`.
 
 ### 3. Run in development
 
@@ -395,7 +395,7 @@ Build output:
 - **.NET publishing**: Trimmed, single-file, self-contained
 - **Rust binary**: Stripped symbols, LTO, single codegen unit
 - **Frontend**: Sourcemaps disabled, vendor chunk split, lazy-loaded App
-- **Database**: Encrypted via SQLCipher (password in `appsettings.json`)
+- **Database**: Encrypted via SQLCipher (password in `appsettings.json`; override via `DatabasePassword` env var for CI/CD)
 
 ## Exception Handling
 
