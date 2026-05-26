@@ -9,6 +9,8 @@
     "tauri:dev": "node scripts/tauri-dev.mjs",
     "tauri:build": "npm run build:dotnet && cd tauri && ../frontend/node_modules/.bin/tauri build",
 "tauri:build:dmg": "npm run build:dotnet && cd tauri && ../frontend/node_modules/.bin/tauri build --bundles app,dmg",
+"tauri:build:msi": "npm run build:dotnet && cd tauri && ../frontend/node_modules/.bin/tauri build --bundles msi",
+"tauri:build:deb": "npm run build:dotnet && cd tauri && ../frontend/node_modules/.bin/tauri build --bundles deb",
     "dev:backend": "dotnet run --project backend/dotnet-backend.csproj --launch-profile http",
     "build:dotnet": "node scripts/build-dotnet.mjs",
     "build:dotnet:all": "node scripts/build-dotnet.mjs --all",

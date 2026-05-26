@@ -3,6 +3,8 @@
 A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Core backend as sidecar), and **React + Vite** (frontend). The .NET backend is structured using CQRS via Mediator, with SQLite + SQLCipher for storage.
 
 > This boilerplate was designed with the help of [opencode](https://opencode.ai), an AI-powered CLI coding assistant.
+>
+> **Note:** This template has only been tested on **macOS**. Windows and Linux commands are provided as a reference and may need adjustments.
 
 ## Project Structure
 
@@ -110,14 +112,17 @@ npm run dev                    # Vite frontend only (http://localhost:5173)
 ### Release build
 
 ```bash
-npm run tauri:build            # .app bundle only (fast)
-npm run tauri:build:dmg        # .app + .dmg installer
+npm run tauri:build            # Platform-native bundle (fast)
+npm run tauri:build:dmg        # .app + .dmg installer (macOS only)
+npm run tauri:build:msi        # .msi installer (Windows only)
+npm run tauri:build:deb        # .deb package (Linux only)
 ```
 
-Output:
+Output (varies by platform):
 
-- `.app` at `tauri/target/release/bundle/macos/tauri-dotnet-app.app`
-- `.dmg` at `tauri/target/release/bundle/dmg/tauri-dotnet-app_0.1.0_x64.dmg` (only with `tauri:build:dmg`)
+- **macOS**: `tauri/target/release/bundle/macos/tauri-dotnet-app.app` / `.dmg`
+- **Windows**: `tauri/target/release/bundle/msi/tauri-dotnet-app_0.1.0_x64.msi`
+- **Linux**: `tauri/target/release/bundle/deb/tauri-dotnet-app_0.1.0_amd64.deb` / `.AppImage`
 
 ### Platform cross-compilation
 
@@ -135,9 +140,9 @@ The recommended approach for multi-platform releases is **CI/CD** (e.g. GitHub A
 
 ```bash
 npm run build:dotnet           # Publish .NET backend (current platform)
-npm run build:dotnet:mac       # Publish for macOS (osx-x64)
-npm run build:dotnet:win       # Publish for Windows (win-x64)
-npm run build:dotnet:linux     # Publish for Linux (linux-x64)
+npm run build:dotnet:mac       # Publish for macOS (osx-x64, cross-compile from any host)
+npm run build:dotnet:win       # Publish for Windows (win-x64, cross-compile from any host)
+npm run build:dotnet:linux     # Publish for Linux (linux-x64, cross-compile from any host)
 npm run build:dotnet:all       # Publish for all three platforms at once
 npm run build                  # Build frontend only
 ```
@@ -159,7 +164,7 @@ In development, you have two ways to reset the database to a clean slate:
 ```bash
 npm run db:reset                # Deletes app.db files from disk (no backend needed)
 # or
-curl -s -X POST http://127.0.0.1:5199/api/db/reset   # Via API (backend must be running)
+curl -s -X POST http://127.0.0.1:5199/api/db/reset   # Via API (backend must be running; use `curl` or `Invoke-WebRequest` on Windows)
 ```
 
 ## API Endpoints
@@ -280,6 +285,7 @@ tauri-plugin-updater = "2"
 
 ```bash
 cd tauri && npx tauri signer generate -w ~/.tauri/tauri-dotnet-app.key
+# On Windows PowerShell: npx tauri signer generate -w $env:USERPROFILE\.tauri\tauri-dotnet-app.key
 ```
 
 Keep the private key secret (used in CI). The public key goes in the config.
