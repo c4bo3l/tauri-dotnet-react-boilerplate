@@ -24,6 +24,7 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 - [Removing Licensing](#removing-licensing)
 - [Renaming the Project](#renaming-the-project)
 - [App Icons](#app-icons)
+- [License](#license)
 - [Linting](#linting)
 - [Testing](#testing)
 - [Dev URLs](#dev-urls)
@@ -554,6 +555,10 @@ cd tauri && npx tauri icon ../path/to/source.png
 ```
 
 This overwrites all icon files with properly scaled versions. The icons are referenced from `tauri/tauri.conf.json` under `bundle.icon`.
+
+## License
+
+[MIT](LICENSE)
 
 ## Linting
 
