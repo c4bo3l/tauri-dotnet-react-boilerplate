@@ -202,6 +202,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
       - uses: actions/setup-dotnet@v4
@@ -216,8 +217,24 @@ jobs:
           cd tauri
           ../frontend/node_modules/.bin/tauri build --bundles ${{ matrix.bundle }}
 
+      - name: Generate changelog
+        id: changelog
+        run: |
+          prev_tag=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          echo "## What's Changed" > /tmp/changelog.md
+          if [ -n "$prev_tag" ]; then
+            git log "$prev_tag"..HEAD --oneline --no-merges --format="%s" | while read line; do
+              echo "- $line"
+            done
+          else
+            git log --oneline --no-merges --format="%s" | while read line; do
+              echo "- $line"
+            done
+          fi >> /tmp/changelog.md
+
       - uses: softprops/action-gh-release@v2
         with:
+          body_path: /tmp/changelog.md
           files: |
             tauri/target/release/bundle/**/*
 ```
@@ -263,13 +280,15 @@ jobs:
 
       - run: node scripts/version.mjs bump ${{ steps.bump.outputs.type }}
 
-      - name: Commit version bump
+      - name: Commit version bump and tag
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+          NEW_VER=$(node scripts/version.mjs read)
           git add scripts/version.txt
-          git commit -m "docs: update version to $(node scripts/version.mjs read)"
-          git push
+          git commit -m "docs: update version to $NEW_VER"
+          git tag "v$NEW_VER"
+          git push --atomic origin main "v$NEW_VER"
 ```
 
 This approach requires **conventional commit** messages on `main`:
