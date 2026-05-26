@@ -1,5 +1,6 @@
 using Mediator;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using Infrastructure.Database;
 using Infrastructure.Dtos.Todos;
 using Infrastructure.Licensing;
@@ -34,6 +35,7 @@ var dbPath = Path.Combine(AppContext.BaseDirectory, "app.db");
 
 builder.Services.AddInfrastructureDatabase(dbPath, dbPassword);
 builder.Services.AddInfrastructureServices();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -64,6 +66,22 @@ app.UseCors();
         .GetRequiredService<IDbContextFactory<AppDbContext>>()
         .CreateDbContextAsync();
     await db.Database.MigrateAsync();
+}
+
+// ── Dev helpers (only registered in Development) ─────────────────────
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+
+    app.MapPost("/api/db/reset", async (IDbContextFactory<AppDbContext> dbFactory) =>
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+        await db.Database.EnsureDeletedAsync();
+        await db.Database.MigrateAsync();
+        return Results.Ok(new { message = "Database reset" });
+    });
 }
 
 app.MapGet("/api/hello", () => Results.Ok(new { message = "Hello from .NET backend!" }));

@@ -109,3 +109,12 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 1.125rem;
+  color: var(--text);
+}

@@ -2,6 +2,8 @@
 
 A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Core backend as sidecar), and **React + Vite** (frontend). The .NET backend is structured using CQRS via Mediator, with SQLite + SQLCipher for storage.
 
+> This boilerplate was designed with the help of [opencode](https://opencode.ai), an AI-powered CLI coding assistant.
+
 ## Project Structure
 
 ```
@@ -25,9 +27,16 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 │       ├── Infrastructure.Services.Tests/  # Handler unit tests (InMemory EF)
 │       └── Infrastructure.Commons.Tests/   # Result<T> tests
 ├── frontend/                   # React + Vite + TypeScript
-│   ├── src/                    # Frontend source
-│   │   ├── LicenseGate.tsx     # Unlock screen wrapper
-│   │   └── ...
+│   ├── src/
+│   │   ├── main.tsx            # Entry point, lazy-loads App
+│   │   ├── App.tsx             # Todo list UI (lazy-loaded)
+│   │   ├── LicenseGate.tsx     # Unlock screen wrapper (eager)
+│   │   ├── index.css           # Global styles
+│   │   ├── App.css
+│   │   └── assets/
+│   ├── index.html
+│   ├── vite.config.ts          # Vite config, manualChunks for vendor split
+│   ├── tsconfig.json
 │   └── package.json
 ├── tauri/                      # Tauri Rust shell
 │   ├── src/lib.rs              # Rust entry point (sidecar startup)
@@ -40,6 +49,7 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 └── scripts/                    # Build & dev automation
     ├── build-dotnet.mjs        # .NET publish + sidecar copy
     ├── tauri-dev.mjs           # Dev launcher: backend + Vite + Tauri
+    ├── db-reset.mjs            # Deletes app.db from build output dirs
     ├── migration.mjs           # EF Core migration helper
     ├── version.mjs             # Version read/set/bump CLI
     └── version.txt             # Single source of truth for version
@@ -127,6 +137,14 @@ npm run migration:remove       # Remove the last migration
 
 The database file is created at `app.db` in the same directory as the executable.
 
+In development, you have two ways to reset the database to a clean slate:
+
+```bash
+npm run db:reset                # Deletes app.db files from disk (no backend needed)
+# or
+curl -s -X POST http://127.0.0.1:5199/api/db/reset   # Via API (backend must be running)
+```
+
 ## API Endpoints
 
 | Method | Path | Description |
@@ -138,13 +156,31 @@ The database file is created at `app.db` in the same directory as the executable
 | POST | `/api/todos` | Create todo (`{ "title": "..." }`) |
 | PUT | `/api/todos/{id}` | Update todo (`{ "title": "...", "isCompleted": true/false }`) |
 | DELETE | `/api/todos/{id}` | Delete todo |
+| POST | `/api/db/reset` | Drop all tables and re-run migrations (dev only) |
+| GET | `/openapi/v1.json` | OpenAPI spec (dev only) |
+| GET | `/scalar/v1` | Scalar API reference UI (dev only) |
+
+## Code Splitting
+
+The frontend uses two levels of code splitting:
+
+- **Lazy-loaded components**: `App.tsx` is loaded via `React.lazy()` + `Suspense`, so its code is fetched only after `LicenseGate` confirms the device is licensed
+- **Vendor chunking**: Vite's `manualChunks` splits React + ReactDOM into a separate `vendor-*.js` chunk (cached independently)
+
+Build output:
+
+| Chunk | Size | Contents |
+|-------|------|----------|
+| `vendor-*.js` | ~190 kB | React, ReactDOM |
+| `index-*.js` | ~4.5 kB | Entry, LicenseGate (eager) |
+| `App-*.js` | ~2 kB | App component (lazy) |
 
 ## Security & Protection
 
 - **.NET backend**: Obfuscated with Obfuscar (rename-only, skips JSON-exposed types)
 - **.NET publishing**: Trimmed, single-file, self-contained
 - **Rust binary**: Stripped symbols, LTO, single codegen unit
-- **Frontend**: Sourcemaps disabled in production
+- **Frontend**: Sourcemaps disabled, vendor chunk split, lazy-loaded App
 - **Database**: Encrypted via SQLCipher (password in `appsettings.json`)
 
 ## Exception Handling
