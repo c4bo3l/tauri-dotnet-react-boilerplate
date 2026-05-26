@@ -95,7 +95,9 @@ Or install individually:
 
 ```bash
 npm install                    # Frontend + root dependencies
-dotnet tool restore            # Local .NET tools (dotnet-ef, obfuscar)
+dotnet restore backend/dotnet-backend.slnx   # .NET packages
+(cd backend && dotnet tool restore)          # Local .NET tools (dotnet-ef, obfuscar)
+cd tauri && cargo fetch        # Rust / Tauri dependencies
 ```
 
 ### 2. Configure the database password
