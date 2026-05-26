@@ -67,6 +67,7 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
     ├── db-reset.mjs            # Deletes app.db from build output dirs
     ├── migration.mjs           # EF Core migration helper
     ├── remove-license.mjs      # Strips all licensing from the project
+    ├── rename.mjs              # Renames project from "tauri-dotnet-app" to a custom name
     ├── version.mjs             # Version read/set/bump CLI
     └── version.txt             # Single source of truth for version
 ```
@@ -321,6 +322,16 @@ node scripts/remove-license.mjs
 ```
 
 This removes `Infrastructure.Licensing/`, `LicenseGenerator/`, `LicenseGate.tsx`, license endpoints, npm scripts, and all README/solution/project references. Can be re-run safely if already clean.
+
+## Renaming the Project
+
+To rename the project from "tauri-dotnet-app" to your own name:
+
+```bash
+node scripts/rename.mjs my-app-name
+```
+
+This updates the npm package names, HTML title, Tauri product name and bundle identifier (`com.my-app-name.dev`), and README paths.
 
 ## Linting
 
