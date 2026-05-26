@@ -327,6 +327,7 @@ npm run build:dotnet:linux     # Publish for Linux (linux-x64, cross-compile fro
 npm run build:dotnet:all       # Publish for all three platforms at once
 npm run build                  # Build frontend only
 ```
+> **Note:** The .NET backend uses **trimmed single-file publishing** (`PublishTrimmed` + `PublishSingleFile`), not Native AOT. EF Core and `Scalar.AspNetCore` rely on runtime reflection/code-gen that AOT doesn't support. To switch to AOT, you'd need to replace them with compatible alternatives (e.g., raw SQLite, manual JSON serialization).
 
 ## Cleaning
 
