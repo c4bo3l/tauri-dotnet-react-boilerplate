@@ -547,7 +547,7 @@ tauri/icons/
 └── icon.ico     (Windows)
 ```
 
-Regenerate all sizes from a single source image:
+Regenerate all sizes from a single source image (recommended: **1024×1024 PNG**):
 
 ```bash
 cd tauri && npx tauri icon ../path/to/source.png
