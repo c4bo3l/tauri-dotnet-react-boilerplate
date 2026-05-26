@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Infrastructure.Commons/Infrastructure.Commons.csproj" />
+    <Project Path="src/Infrastructure.Database/Infrastructure.Database.csproj" />
+    <Project Path="src/Infrastructure.Dtos/Infrastructure.Dtos.csproj" />
+    <Project Path="src/Infrastructure.Models/Infrastructure.Models.csproj" />
+    <Project Path="src/Infrastructure.Services/Infrastructure.Services.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Infrastructure.Commons.Tests/Infrastructure.Commons.Tests.csproj" />
+    <Project Path="tests/Infrastructure.Services.Tests/Infrastructure.Services.Tests.csproj" />
+  </Folder>
+  <Project Path="dotnet-backend.csproj" />
+</Solution>

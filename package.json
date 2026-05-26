@@ -1,0 +1,21 @@
+{
+  "name": "tauri-dotnet-app-root",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "lint": "npm run lint --prefix frontend",
+    "preview": "npm run preview --prefix frontend",
+    "tauri:dev": "node scripts/tauri-dev.mjs",
+    "tauri:build": "npm run build:dotnet && cd frontend && npx tauri build --config ../tauri/tauri.conf.json",
+    "dev:backend": "dotnet run --project backend/dotnet-backend.csproj --launch-profile http",
+    "build:dotnet": "node scripts/build-dotnet.mjs",
+    "build:dotnet:all": "node scripts/build-dotnet.mjs --all",
+    "build:dotnet:win": "node scripts/build-dotnet.mjs --platform win32",
+    "build:dotnet:linux": "node scripts/build-dotnet.mjs --platform linux",
+    "build:dotnet:mac": "node scripts/build-dotnet.mjs --platform darwin",
+    "migration:create": "node scripts/migration.mjs create",
+    "migration:remove": "node scripts/migration.mjs remove",
+    "migration:apply": "node scripts/migration.mjs apply"
+  }
+}

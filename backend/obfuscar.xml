@@ -1,0 +1,15 @@
+<?xml version='1.0'?>
+<Obfuscator>
+  <Var name="InPath" value="." />
+  <Var name="OutPath" value="." />
+  <Var name="KeepPublicApi" value="false" />
+  <Var name="HideStrings" value="false" />
+  <Var name="ReuseNames" value="true" />
+  <Var name="SuppressIldasm" value="true" />
+  <Module file="dotnet-backend.dll">
+    <SkipType name="*WeatherForecast" />
+    <SkipType name="*CreateTodoRequest" />
+    <SkipType name="*UpdateTodoRequest" />
+    <SkipType name="Infrastructure.Models.TodoItem" />
+  </Module>
+</Obfuscator>

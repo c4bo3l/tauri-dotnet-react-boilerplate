@@ -1,0 +1,11 @@
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/bin/Debug/net10.0/Infrastructure.Commons.deps.json
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/bin/Debug/net10.0/Infrastructure.Commons.dll
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/bin/Debug/net10.0/Infrastructure.Commons.pdb
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/obj/Debug/net10.0/Infrastructure.Commons.GeneratedMSBuildEditorConfig.editorconfig
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/obj/Debug/net10.0/Infrastructure.Commons.AssemblyInfoInputs.cache
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/obj/Debug/net10.0/Infrastructure.Commons.AssemblyInfo.cs
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/obj/Debug/net10.0/Infrastructure.Commons.csproj.CoreCompileInputs.cache
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/obj/Debug/net10.0/Infrastructure.Commons.dll
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/obj/Debug/net10.0/refint/Infrastructure.Commons.dll
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/obj/Debug/net10.0/Infrastructure.Commons.pdb
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Commons/obj/Debug/net10.0/ref/Infrastructure.Commons.dll

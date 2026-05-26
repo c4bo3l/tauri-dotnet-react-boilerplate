@@ -1,0 +1,11 @@
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/bin/Release/net10.0/osx-x64/Infrastructure.Dtos.deps.json
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/bin/Release/net10.0/osx-x64/Infrastructure.Dtos.dll
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/bin/Release/net10.0/osx-x64/Infrastructure.Dtos.pdb
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/obj/Release/net10.0/osx-x64/Infrastructure.Dtos.GeneratedMSBuildEditorConfig.editorconfig
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/obj/Release/net10.0/osx-x64/Infrastructure.Dtos.AssemblyInfoInputs.cache
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/obj/Release/net10.0/osx-x64/Infrastructure.Dtos.AssemblyInfo.cs
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/obj/Release/net10.0/osx-x64/Infrastructure.Dtos.csproj.CoreCompileInputs.cache
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/obj/Release/net10.0/osx-x64/Infrastructure.Dtos.dll
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/obj/Release/net10.0/osx-x64/refint/Infrastructure.Dtos.dll
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/obj/Release/net10.0/osx-x64/Infrastructure.Dtos.pdb
+/Users/c4bo3l/developments/tauri-dotnet-app/backend/src/Infrastructure.Dtos/obj/Release/net10.0/osx-x64/ref/Infrastructure.Dtos.dll

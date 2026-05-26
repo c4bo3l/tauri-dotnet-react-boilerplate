@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>dotnet_backend</RootNamespace>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>true</PublishTrimmed>
+    <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+    <DefaultItemExcludes>src/**/*.cs;tests/**/*.cs</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="src\Infrastructure.Models\Infrastructure.Models.csproj" />
+    <ProjectReference Include="src\Infrastructure.Database\Infrastructure.Database.csproj" />
+    <ProjectReference Include="src\Infrastructure.Services\Infrastructure.Services.csproj" />
+    <ProjectReference Include="src\Infrastructure.Dtos\Infrastructure.Dtos.csproj" />
+    <ProjectReference Include="src\Infrastructure.Commons\Infrastructure.Commons.csproj" />
+  </ItemGroup>
+
+  <Target Name="ObfuscarAfterBuild" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
+    <PropertyGroup>
+      <_ObfuscatorConfig>$(TargetDir)obfuscar.config.xml</_ObfuscatorConfig>
+      <_InPath>$(TargetDir)</_InPath>
+      <_OutPath>$(TargetDir)</_OutPath>
+      <_Module>$(TargetPath)</_Module>
+    </PropertyGroup>
+    <ItemGroup>
+      <_ObfuscatorConfigLine Include="&lt;?xml version='1.0'?&gt;" />
+      <_ObfuscatorConfigLine Include="&lt;Obfuscator&gt;" />
+      <_ObfuscatorConfigLine Include="  &lt;Var name=&quot;InPath&quot; value=&quot;$(_InPath)&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="  &lt;Var name=&quot;OutPath&quot; value=&quot;$(_OutPath)&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="  &lt;Var name=&quot;KeepPublicApi&quot; value=&quot;false&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="  &lt;Var name=&quot;HideStrings&quot; value=&quot;false&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="  &lt;Var name=&quot;ReuseNames&quot; value=&quot;true&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="  &lt;Var name=&quot;SuppressIldasm&quot; value=&quot;true&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="  &lt;Module file=&quot;$(_Module)&quot;&gt;" />
+      <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;*WeatherForecast&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;*CreateTodoRequest&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;*UpdateTodoRequest&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;Infrastructure.Models.TodoItem&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="  &lt;/Module&gt;" />
+      <_ObfuscatorConfigLine Include="&lt;/Obfuscator&gt;" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_ObfuscatorConfig)" Overwrite="true" Lines="@(_ObfuscatorConfigLine)" />
+    <Exec Command="dotnet obfuscar.console &quot;$(_ObfuscatorConfig)&quot;" />
+    <ItemGroup>
+      <_ObfuscatedFiles Include="$(TargetDir)Obfuscated/*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_ObfuscatedFiles)" DestinationFolder="$(TargetDir)" />
+    <RemoveDir Directories="$(TargetDir)Obfuscated" />
+    <Delete Files="$(_ObfuscatorConfig)" />
+  </Target>
+
+</Project>
