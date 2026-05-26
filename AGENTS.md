@@ -39,7 +39,7 @@
 - **DB** at `AppContext.BaseDirectory/app.db` (next to the .NET executable). **License** at `AppContext.BaseDirectory/license.lic`.
 - **DatabasePassword** required in `appsettings.json`.
 - **Version** single-sourced from `scripts/version.txt`. Synced automatically to `tauri.conf.json` during build/dev.
-- **Private key** for licensing at `~/.tauri-dotnet-app/private-key.pem` (outside repo). Public key embedded in `EmbeddedPublicKey.cs`.
+- **Private key** for licensing at `~/.tauri-dotnet-app/private-key.pem` (outside repo). Public key in `appsettings.json` (`LicensePublicKey`).
 
 ## Licensing System
 

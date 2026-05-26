@@ -131,8 +131,10 @@ app.MapDelete("/api/todos/{id:int}", async (int id, IMediator mediator) =>
 
 // ── License / unlock ──────────────────────────────────────────────────
 
+var licensePublicKey = builder.Configuration["LicensePublicKey"]
+    ?? throw new InvalidOperationException("LicensePublicKey is required in appsettings.json");
 var licensePath = Path.Combine(AppContext.BaseDirectory, "license.lic");
-var licenseService = new LicenseService();
+var licenseService = new LicenseService(licensePublicKey);
 
 app.MapGet("/api/license/status", () =>
 {

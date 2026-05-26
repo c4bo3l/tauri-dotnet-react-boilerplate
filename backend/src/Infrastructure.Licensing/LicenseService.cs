@@ -6,10 +6,10 @@ public class LicenseService
 {
     private readonly RSA _publicKey;
 
-    public LicenseService()
+    public LicenseService(string publicKeyPem)
     {
         _publicKey = RSA.Create();
-        _publicKey.ImportFromPem(EmbeddedPublicKey.Value);
+        _publicKey.ImportFromPem(publicKeyPem);
     }
 
     public bool IsLicensed(string licenseFilePath)

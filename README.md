@@ -444,7 +444,7 @@ npm run license:sign -- private-key.pem <machine-id> license.lic "30d"
 npm run license:sign -- private-key.pem <machine-id> license.lic "2027-06-01"
 ```
 
-The public key is embedded in the app at `backend/src/Infrastructure.Licensing/EmbeddedPublicKey.cs`.
+The public key is set in `appsettings.json` (`LicensePublicKey`). Override it via environment variable or CI/CD secret (`LicensePublicKey`) for different environments.
 Keep the **private key** secret and never commit it to the repository.
 
 ### API endpoints
