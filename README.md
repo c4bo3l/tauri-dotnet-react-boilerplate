@@ -6,6 +6,27 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 >
 > **Note:** This template has only been tested on **macOS**. Windows and Linux commands are provided as a reference and may need adjustments.
 
+## Table of Contents
+
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Build](#build)
+  - [GitHub Actions](#github-actions)
+- [Cleaning](#cleaning)
+- [Database & Migrations](#database--migrations)
+- [API Endpoints](#api-endpoints)
+- [Code Splitting](#code-splitting)
+- [Security & Protection](#security--protection)
+- [Exception Handling](#exception-handling)
+- [Versioning](#versioning)
+- [Licensing & Unlock System](#licensing--unlock-system)
+- [Auto-Update](#auto-update)
+- [Removing Licensing](#removing-licensing)
+- [Renaming the Project](#renaming-the-project)
+- [Linting](#linting)
+- [Testing](#testing)
+- [Dev URLs](#dev-urls)
+
 ## Project Structure
 
 ```
