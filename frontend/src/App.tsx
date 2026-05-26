@@ -58,7 +58,7 @@ function App() {
       <p style={{ color: '#666' }}>{message}</p>
 
       <p style={{ fontSize: '0.85rem', color: '#999' }}>
-        Database encrypted with SQLCipher — set <code>DB_PASSWORD</code> env var
+        Database encrypted with SQLCipher — set in <code>appsettings.json</code>
       </p>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
