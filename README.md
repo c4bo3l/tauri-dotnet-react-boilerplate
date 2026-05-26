@@ -125,6 +125,8 @@ cd tauri && cargo fetch        # Rust / Tauri dependencies
 
 Set `DatabasePassword` and `LicensePublicKey` in `backend/appsettings.json` (and `backend/appsettings.Development.json` for dev). In CI/CD, override them via environment variables (`DatabasePassword`, `LicensePublicKey`) — .NET config reads env vars before `appsettings.json`.
 
+> **Security warning:** `appsettings.json` is checked into version control. Never store real secrets there in plain text — use environment variables, CI/CD secrets, or a secret manager instead. The values shown are placeholders for local development only.
+
 ### 3. Run in development
 
 ```bash
