@@ -519,7 +519,7 @@ If you don't need the licensing system, run the cleanup script to strip it entir
 node scripts/remove-license.mjs
 ```
 
-This removes `Infrastructure.Licensing/`, `LicenseGenerator/`, `LicenseGate.tsx`, license endpoints, npm scripts, and all README/solution/project references. Can be re-run safely if already clean.
+This removes `Infrastructure.Licensing/`, `LicenseGenerator/`, `LicenseGate.tsx`, license endpoints, npm scripts, `LicensePublicKey` from `appsettings.json`, and all README/solution/project references. Can be re-run safely if already clean.
 
 ## Renaming the Project
 
