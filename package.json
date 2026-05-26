@@ -7,7 +7,8 @@
     "lint": "npm run lint --prefix frontend",
     "preview": "npm run preview --prefix frontend",
     "tauri:dev": "node scripts/tauri-dev.mjs",
-    "tauri:build": "npm run build:dotnet && cd frontend && npx tauri build --config ../tauri/tauri.conf.json",
+    "tauri:build": "npm run build:dotnet && cd tauri && ../frontend/node_modules/.bin/tauri build",
+"tauri:build:dmg": "npm run build:dotnet && cd tauri && ../frontend/node_modules/.bin/tauri build --bundles app,dmg",
     "dev:backend": "dotnet run --project backend/dotnet-backend.csproj --launch-profile http",
     "build:dotnet": "node scripts/build-dotnet.mjs",
     "build:dotnet:all": "node scripts/build-dotnet.mjs --all",
@@ -16,6 +17,9 @@
     "build:dotnet:mac": "node scripts/build-dotnet.mjs --platform darwin",
     "migration:create": "node scripts/migration.mjs create",
     "migration:remove": "node scripts/migration.mjs remove",
-    "migration:apply": "node scripts/migration.mjs apply"
+    "migration:apply": "node scripts/migration.mjs apply",
+    "version": "node scripts/version.mjs read",
+    "version:set": "node scripts/version.mjs set",
+    "version:bump": "node scripts/version.mjs bump"
   }
 }

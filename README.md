@@ -10,7 +10,10 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 │   ├── dotnet-backend.slnx     # Solution file
 │   ├── Program.cs              # App startup, middleware, DI, APIs
 │   ├── appsettings.json        # Configuration (DB password, etc.)
+│   ├── appsettings.Development.json
 │   ├── obfuscar.xml            # Obfuscation config (reference)
+│   ├── Properties/
+│   │   └── launchSettings.json
 │   ├── src/
 │   │   ├── Infrastructure.Models/     # Entity models (TodoItem)
 │   │   ├── Infrastructure.Database/   # EF Core DbContext, migrations
@@ -30,7 +33,9 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 └── scripts/                    # Build & dev automation
     ├── build-dotnet.mjs        # .NET publish + sidecar copy
     ├── tauri-dev.mjs           # Dev launcher: backend + Vite + Tauri
-    └── migration.mjs           # EF Core migration helper
+    ├── migration.mjs           # EF Core migration helper
+    ├── version.mjs             # Version read/set/bump CLI
+    └── version.txt             # Single source of truth for version
 ```
 
 ## Prerequisites
@@ -71,13 +76,26 @@ npm run dev                    # Vite frontend only (http://localhost:5173)
 ### Release build
 
 ```bash
-npm run tauri:build            # Build everything: .NET → frontend → Tauri bundle
+npm run tauri:build            # .app bundle only (fast)
+npm run tauri:build:dmg        # .app + .dmg installer
 ```
 
-This produces:
+Output:
 
-- `.app` bundle at `tauri/target/release/bundle/macos/tauri-dotnet-app.app`
-- `.dmg` installer at `tauri/target/release/bundle/dmg/tauri-dotnet-app_0.1.0_x64.dmg`
+- `.app` at `tauri/target/release/bundle/macos/tauri-dotnet-app.app`
+- `.dmg` at `tauri/target/release/bundle/dmg/tauri-dotnet-app_0.1.0_x64.dmg` (only with `tauri:build:dmg`)
+
+### Platform cross-compilation
+
+| Part | Cross-compile from macOS? |
+|------|---------------------------|
+| .NET backend | ✅ Yes (see platform-specific commands below) |
+| Tauri (Rust shell) | ❌ No — requires native SDK per platform |
+| Frontend (Vite) | ✅ Yes (pure JavaScript) |
+
+The .NET backend can be published for any platform from macOS, but **the final Tauri bundle must be built on the target OS** (the Tauri CLI needs the platform's native toolchain to compile Rust and package the app).
+
+The recommended approach for multi-platform releases is **CI/CD** (e.g. GitHub Actions matrix build).
 
 ### Build individual components
 
@@ -86,7 +104,7 @@ npm run build:dotnet           # Publish .NET backend (current platform)
 npm run build:dotnet:mac       # Publish for macOS (osx-x64)
 npm run build:dotnet:win       # Publish for Windows (win-x64)
 npm run build:dotnet:linux     # Publish for Linux (linux-x64)
-npm run build:dotnet:all       # Publish for all three platforms
+npm run build:dotnet:all       # Publish for all three platforms at once
 npm run build                  # Build frontend only
 ```
 
@@ -128,6 +146,18 @@ The database file is created at `app.db` in the same directory as the executable
 - **Unobserved task exceptions**: Logged via `UnobservedTaskException`
 - **Fatal crashes**: Logged via `UnhandledException`, app auto-restarts up to 5 times
 - **SQLite transient errors** (BUSY/LOCKED): Retried up to 3 times via Polly pipeline behavior
+
+## Versioning
+
+All version numbers are single-sourced from `scripts/version.txt`. Build scripts automatically inject it into the .NET assembly version and `tauri.conf.json`.
+
+```bash
+npm run version                # Read current version
+npm run version:set 1.2.3      # Set explicitly
+npm run version:bump patch     # 0.1.0 → 0.1.1
+npm run version:bump minor     # 0.1.0 → 0.2.0
+npm run version:bump major     # 0.1.0 → 1.0.0
+```
 
 ## Testing
 

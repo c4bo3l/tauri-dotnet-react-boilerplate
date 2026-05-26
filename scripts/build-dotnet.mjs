@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import { existsSync, cpSync, rmSync, mkdirSync } from 'fs'
+import { existsSync, cpSync, rmSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -7,6 +7,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 const DOTNET_PROJ = resolve(ROOT, 'backend')
 const BINARIES = resolve(ROOT, 'tauri', 'binaries')
+
+const VERSION = readFileSync(resolve(__dirname, 'version.txt'), 'utf-8').trim()
 
 const PLATFORMS = {
   win32: {
@@ -27,12 +29,13 @@ const PLATFORMS = {
 }
 
 function publish(rustTriple, dotnetRid) {
+  mkdirSync(BINARIES, { recursive: true })
   const outDir = resolve(BINARIES, 'publish-tmp')
   mkdirSync(outDir, { recursive: true })
 
-  console.log(`Publishing .NET backend for ${rustTriple} (rid: ${dotnetRid})...`)
+  console.log(`Publishing .NET backend v${VERSION} for ${rustTriple} (rid: ${dotnetRid})...`)
   execSync(
-    `dotnet publish "${DOTNET_PROJ}/dotnet-backend.csproj" -c Release -r ${dotnetRid} --self-contained true -p:PublishSingleFile=true -o "${outDir}"`,
+    `dotnet publish "${DOTNET_PROJ}/dotnet-backend.csproj" -c Release -r ${dotnetRid} --self-contained true -p:PublishSingleFile=true -p:Version=${VERSION} -o "${outDir}"`,
     { stdio: 'inherit', cwd: DOTNET_PROJ }
   )
 
@@ -44,6 +47,14 @@ function publish(rustTriple, dotnetRid) {
   rmSync(outDir, { recursive: true, force: true })
 
   console.log(`Copied sidecar binary → ${targetName}`)
+}
+
+function updateTauriConfig() {
+  const configPath = resolve(ROOT, 'tauri', 'tauri.conf.json')
+  const config = JSON.parse(readFileSync(configPath, 'utf-8'))
+  config.version = VERSION
+  writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n')
+  console.log(`Updated tauri/tauri.conf.json version → ${VERSION}`)
 }
 
 function publishAll() {
@@ -58,6 +69,9 @@ function publishAll() {
 }
 
 const args = process.argv.slice(2)
+
+updateTauriConfig()
+
 if (args.includes('--all')) {
   publishAll()
 } else if (args.includes('--platform')) {

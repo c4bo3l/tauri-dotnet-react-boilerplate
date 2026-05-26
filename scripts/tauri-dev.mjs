@@ -1,4 +1,5 @@
 import { spawn, execSync } from 'child_process'
+import { readFileSync, writeFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -8,6 +9,7 @@ const BACKEND_DIR = resolve(ROOT, 'backend')
 const FRONTEND_DIR = resolve(ROOT, 'frontend')
 const TAURI_DIR = resolve(ROOT, 'tauri')
 const TAURI_CLI = resolve(ROOT, 'frontend', 'node_modules', '@tauri-apps', 'cli', 'tauri.js')
+const VERSION = readFileSync(resolve(__dirname, 'version.txt'), 'utf-8').trim()
 
 async function waitForServer(url, timeoutMs = 60000) {
   const start = Date.now()
@@ -22,6 +24,13 @@ async function waitForServer(url, timeoutMs = 60000) {
 }
 
 async function main() {
+  // Sync version to tauri.conf.json
+  const configPath = resolve(TAURI_DIR, 'tauri.conf.json')
+  const config = JSON.parse(readFileSync(configPath, 'utf-8'))
+  config.version = VERSION
+  writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n')
+  console.log(`Version: ${VERSION}`)
+
   // Build .NET backend
   console.log('Building .NET backend...')
   execSync('dotnet build dotnet-backend.csproj --nologo', { stdio: 'inherit', cwd: BACKEND_DIR })
