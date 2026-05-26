@@ -1,9 +1,10 @@
-import { StrictMode, Suspense, lazy } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import LicenseGate from './LicenseGate.tsx'
+/* eslint-disable react-refresh/only-export-components */
+import { StrictMode, Suspense, lazy } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import LicenseGate from './LicenseGate.tsx';
 
-const App = lazy(() => import('./App.tsx'))
+const App = lazy(() => import('./App.tsx'));
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -13,4 +14,4 @@ createRoot(document.getElementById('root')!).render(
       </Suspense>
     </LicenseGate>
   </StrictMode>,
-)
+);

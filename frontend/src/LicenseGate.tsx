@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 
-const API_BASE = 'http://127.0.0.1:5199'
+const API_BASE = 'http://127.0.0.1:5199';
 
 interface LicenseStatus {
   isLicensed: boolean
@@ -11,45 +11,45 @@ interface LicenseStatus {
 }
 
 export default function LicenseGate({ children }: { children: React.ReactNode }) {
-  const [status, setStatus] = useState<LicenseStatus | null>(null)
-  const [licenseCode, setLicenseCode] = useState('')
-  const [error, setError] = useState('')
-  const [activating, setActivating] = useState(false)
+  const [status, setStatus] = useState<LicenseStatus | null>(null);
+  const [licenseCode, setLicenseCode] = useState('');
+  const [error, setError] = useState('');
+  const [activating, setActivating] = useState(false);
 
-  const check = () =>
+  const check = (): Promise<void> =>
     fetch(`${API_BASE}/api/license/status`)
       .then((r) => r.json())
-      .then(setStatus)
+      .then((data) => { setStatus(data as LicenseStatus); });
 
-  useEffect(() => { check() }, [])
+  useEffect(() => { void check(); }, []);
 
   const activate = async () => {
-    if (!licenseCode.trim()) return
-    setActivating(true)
-    setError('')
+    if (!licenseCode.trim()) return;
+    setActivating(true);
+    setError('');
     try {
       const res = await fetch(`${API_BASE}/api/license/activate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(licenseCode),
-      })
-      const data = await res.json()
+      });
+      const data: LicenseStatus & { error?: string } = await res.json() as LicenseStatus & { error?: string };
       if (res.ok) {
-        await check()
+        await check();
       } else {
-        setError(data.error || 'Activation failed')
+        setError(data.error || 'Activation failed');
       }
     } catch {
-      setError('Could not reach activation server')
+      setError('Could not reach activation server');
     } finally {
-      setActivating(false)
+      setActivating(false);
     }
-  }
+  };
 
-  if (!status) return null
+  if (!status) return null;
 
   if (status.isLicensed) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
   return (
@@ -93,7 +93,7 @@ export default function LicenseGate({ children }: { children: React.ReactNode })
         )}
 
         <button
-          onClick={activate}
+          onClick={() => { void activate(); }}
           disabled={activating || !licenseCode.trim()}
           style={{
             marginTop: '1rem', width: '100%', padding: '0.6rem',
@@ -106,5 +106,5 @@ export default function LicenseGate({ children }: { children: React.ReactNode })
         </button>
       </div>
     </div>
-  )
+  );
 }

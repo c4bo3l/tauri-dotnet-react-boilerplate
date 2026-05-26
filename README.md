@@ -7,9 +7,13 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 ## Project Structure
 
 ```
+├── .gitignore                  # Root gitignore (dotnet, node, rust, macOS, etc.)
 ├── backend/                    # .NET 10 ASP.NET Core backend
+│   ├── .config/
+│   │   └── dotnet-tools.json   # Local tool manifest (dotnet-ef, obfuscar)
 │   ├── dotnet-backend.csproj   # Web API entry point
 │   ├── dotnet-backend.slnx     # Solution file
+│   ├── dotnet-backend.http     # HTTP file for testing endpoints
 │   ├── Program.cs              # App startup, middleware, DI, APIs
 │   ├── appsettings.json        # Configuration (DB password, etc.)
 │   ├── appsettings.Development.json
@@ -18,14 +22,14 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 │   │   └── launchSettings.json
 │   ├── src/
 │   │   ├── Infrastructure.Models/     # Entity models (TodoItem)
-│   │   ├── Infrastructure.Database/   # EF Core DbContext, migrations
+│   │   ├── Infrastructure.Database/   # EF Core DbContext + Migrations
 │   │   ├── Infrastructure.Dtos/       # Request/response DTOs
 │   │   ├── Infrastructure.Commons/    # Shared types (Result<T>)
 │   │   ├── Infrastructure.Licensing/  # RSA license verification, machine ID
 │   │   └── Infrastructure.Services/   # CQRS handlers, pipeline behaviors
 │   └── tests/
-│       ├── Infrastructure.Services.Tests/  # Handler unit tests (InMemory EF)
-│       └── Infrastructure.Commons.Tests/   # Result<T> tests
+│       ├── Infrastructure.Services.Tests/  # 10 handler tests (InMemory EF)
+│       └── Infrastructure.Commons.Tests/   # 2 Result<T> tests
 ├── frontend/                   # React + Vite + TypeScript
 │   ├── src/
 │   │   ├── main.tsx            # Entry point, lazy-loads App
@@ -35,15 +39,26 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 │   │   ├── App.css
 │   │   └── assets/
 │   ├── index.html
-│   ├── vite.config.ts          # Vite config, manualChunks for vendor split
-│   ├── tsconfig.json
+│   ├── vite.config.ts          # Vite config (SWC plugin, manualChunks)
+│   ├── eslint.config.js        # ESLint flat config (type-aware, enforced semicolons)
+│   ├── tsconfig.json           # TS config (references app + node configs)
+│   ├── tsconfig.app.json
+│   ├── tsconfig.node.json
 │   └── package.json
 ├── tauri/                      # Tauri Rust shell
-│   ├── src/lib.rs              # Rust entry point (sidecar startup)
+│   ├── .gitignore
+│   ├── src/
+│   │   ├── lib.rs              # Sidecar startup logic
+│   │   └── main.rs             # Tauri entry point
+│   ├── build.rs                # Tauri build script
+│   ├── capabilities/
+│   │   └── default.json        # Tauri capability permissions
+│   ├── icons/                  # App icons (icns, ico, png)
+│   ├── binaries/               # .NET sidecar binary (auto-copied by build-dotnet)
 │   ├── tauri.conf.json         # Tauri configuration
 │   └── Cargo.toml              # Rust dependencies, release profile (strip+LTO)
 ├── tools/                      # Standalone CLI tools
-│   └── LicenseGenerator/       # .NET console app: generate RSA keys & license files
+│   └── LicenseGenerator/       # .NET console app: generate RSA keys & licenses
 │       ├── Program.cs
 │       └── LicenseGenerator.csproj
 └── scripts/                    # Build & dev automation
@@ -51,6 +66,7 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
     ├── tauri-dev.mjs           # Dev launcher: backend + Vite + Tauri
     ├── db-reset.mjs            # Deletes app.db from build output dirs
     ├── migration.mjs           # EF Core migration helper
+    ├── remove-license.mjs      # Strips all licensing from the project
     ├── version.mjs             # Version read/set/bump CLI
     └── version.txt             # Single source of truth for version
 ```
@@ -296,8 +312,33 @@ if (update?.available) {
 
 The updater replaces the entire `.app` bundle, so the .NET sidecar inside it is updated automatically.
 
+## Removing Licensing
+
+If you don't need the licensing system, run the cleanup script to strip it entirely:
+
+```bash
+node scripts/remove-license.mjs
+```
+
+This removes `Infrastructure.Licensing/`, `LicenseGenerator/`, `LicenseGate.tsx`, license endpoints, npm scripts, and all README/solution/project references. Can be re-run safely if already clean.
+
+## Linting
+
+```bash
+npm run lint                    # ESLint — type-aware (recommendedTypeChecked), enforced semicolons
+```
+
 ## Testing
 
 ```bash
 dotnet test backend/dotnet-backend.slnx
 ```
+
+## Dev URLs
+
+| URL | Description |
+|-----|-------------|
+| `http://127.0.0.1:5199` | .NET backend |
+| `http://localhost:5173` | Vite frontend |
+| `http://localhost:5199/scalar/v1` | Scalar API reference (dev only) |
+| `http://localhost:5199/openapi/v1.json` | OpenAPI spec (dev only) |
