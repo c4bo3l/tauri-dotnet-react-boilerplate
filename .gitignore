@@ -60,3 +60,9 @@ tauri/binaries/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# ── license / keys ────────────────────────────────────
+*.lic
+private-key.pem
+public-key.pem
+*.key

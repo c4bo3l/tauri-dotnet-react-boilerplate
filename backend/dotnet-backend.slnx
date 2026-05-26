@@ -3,6 +3,7 @@
     <Project Path="src/Infrastructure.Commons/Infrastructure.Commons.csproj" />
     <Project Path="src/Infrastructure.Database/Infrastructure.Database.csproj" />
     <Project Path="src/Infrastructure.Dtos/Infrastructure.Dtos.csproj" />
+    <Project Path="src/Infrastructure.Licensing/Infrastructure.Licensing.csproj" />
     <Project Path="src/Infrastructure.Models/Infrastructure.Models.csproj" />
     <Project Path="src/Infrastructure.Services/Infrastructure.Services.csproj" />
   </Folder>

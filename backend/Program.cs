@@ -2,6 +2,7 @@ using Mediator;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Database;
 using Infrastructure.Dtos.Todos;
+using Infrastructure.Licensing;
 using Infrastructure.Services;
 using Infrastructure.Services.Todos.Commands;
 using Infrastructure.Services.Todos.Queries;
@@ -108,6 +109,33 @@ app.MapDelete("/api/todos/{id:int}", async (int id, IMediator mediator) =>
 {
     var deleted = await mediator.Send(new DeleteTodoCommand(id));
     return deleted ? Results.NoContent() : Results.NotFound();
+});
+
+// ── License / unlock ──────────────────────────────────────────────────
+
+var licensePath = Path.Combine(AppContext.BaseDirectory, "license.lic");
+var licenseService = new LicenseService();
+
+app.MapGet("/api/license/status", () =>
+{
+    var status = licenseService.GetStatus(licensePath);
+    return Results.Ok(status);
+});
+
+app.MapPost("/api/license/activate", (string licenseCode) =>
+{
+    try
+    {
+        File.WriteAllText(licensePath, licenseCode);
+        var status = licenseService.GetStatus(licensePath);
+        return status.IsLicensed
+            ? Results.Ok(new { message = "License activated" })
+            : Results.BadRequest(new { error = status.Reason ?? "Invalid license" });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
 });
 
 // ── Global exception handlers ──────────────────────────────────────────

@@ -29,6 +29,7 @@
     <ProjectReference Include="src\Infrastructure.Services\Infrastructure.Services.csproj" />
     <ProjectReference Include="src\Infrastructure.Dtos\Infrastructure.Dtos.csproj" />
     <ProjectReference Include="src\Infrastructure.Commons\Infrastructure.Commons.csproj" />
+    <ProjectReference Include="src\Infrastructure.Licensing\Infrastructure.Licensing.csproj" />
   </ItemGroup>
 
   <Target Name="ObfuscarAfterBuild" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
@@ -52,6 +53,8 @@
       <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;*CreateTodoRequest&quot; /&gt;" />
       <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;*UpdateTodoRequest&quot; /&gt;" />
       <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;Infrastructure.Models.TodoItem&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;Infrastructure.Licensing.LicenseInfo&quot; /&gt;" />
+      <_ObfuscatorConfigLine Include="    &lt;SkipType name=&quot;Infrastructure.Licensing.LicenseData&quot; /&gt;" />
       <_ObfuscatorConfigLine Include="  &lt;/Module&gt;" />
       <_ObfuscatorConfigLine Include="&lt;/Obfuscator&gt;" />
     </ItemGroup>

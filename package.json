@@ -20,6 +20,8 @@
     "migration:apply": "node scripts/migration.mjs apply",
     "version": "node scripts/version.mjs read",
     "version:set": "node scripts/version.mjs set",
-    "version:bump": "node scripts/version.mjs bump"
+    "version:bump": "node scripts/version.mjs bump",
+    "license:keygen": "dotnet run --project tools/LicenseGenerator -- keygen",
+    "license:sign": "dotnet run --project tools/LicenseGenerator -- sign"
   }
 }
