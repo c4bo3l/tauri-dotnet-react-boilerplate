@@ -23,6 +23,7 @@ A desktop application built with **Tauri** (Rust shell), **.NET 10** (ASP.NET Co
 - [Auto-Update](#auto-update)
 - [Removing Licensing](#removing-licensing)
 - [Renaming the Project](#renaming-the-project)
+- [App Icons](#app-icons)
 - [Linting](#linting)
 - [Testing](#testing)
 - [Dev URLs](#dev-urls)
@@ -532,6 +533,27 @@ node scripts/rename.mjs my-app-name
 ```
 
 This updates the npm package names, HTML title, Tauri product name and bundle identifier (`com.my-app-name.dev`), and README paths.
+
+## App Icons
+
+Replace the icon files in `tauri/icons/`:
+
+```
+tauri/icons/
+├── 32x32.png
+├── 128x128.png
+├── 128x128@2x.png
+├── icon.icns    (macOS)
+└── icon.ico     (Windows)
+```
+
+Regenerate all sizes from a single source image:
+
+```bash
+cd tauri && npx tauri icon ../path/to/source.png
+```
+
+This overwrites all icon files with properly scaled versions. The icons are referenced from `tauri/tauri.conf.json` under `bundle.icon`.
 
 ## Linting
 
